@@ -12,6 +12,9 @@ export interface IApi {
 // Тип для платежной системы
 export type TPayment = "card" | "cash";
 
+// Тип для хранения ошибок валидации формы данных покупателя
+export type TFormErrors = Partial<Record<keyof IBuyer, string>>;
+
 // Интерфейс товара
 export interface IProduct {
   id: string;
@@ -24,7 +27,7 @@ export interface IProduct {
 
 // Интерфейс покупателя
 export interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | "";
   email: string;
   phone: string;
   address: string;

@@ -10,14 +10,8 @@ export class LarekApi extends Api {
   }
 
   // Получение списка товаров с сервера (GET запрос на /product)
-  getProductsList(): Promise<IProduct[]> {
-    return this.get<IApiListResponse<IProduct>>("/product").then((data) =>
-      data.items.map((item) => ({
-        ...item,
-        // Склеиваем префикс CDN и относительный путь к картинке
-        image: this.cdn + item.image,
-      })),
-    );
+  getProductsList(): Promise<IApiListResponse<IProduct>> {
+    return this.get<IApiListResponse<IProduct>>("/product");
   }
 
   // Отправка данных заказа на сервер (POST запрос на /order)

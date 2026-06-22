@@ -1,9 +1,9 @@
-import { IBuyer, TPayment } from "../../types";
+import { IBuyer, TPayment, TFormErrors } from "../../types";
 import { IEvents } from "../base/Events";
 
 export class BuyerData {
   protected _buyer: IBuyer = {
-    payment: "card", // значение по умолчанию
+    payment: "",
     address: "",
     email: "",
     phone: "",
@@ -18,9 +18,8 @@ export class BuyerData {
     // Обновляем только одно конкретное поле, сохраняя остальные данные
     (this._buyer[field] as string | TPayment) = value;
 
-    // После каждого изменения запускаем валидацию и сообщаем приложению об ошибках
-    const errors = this.validate();
-    this.events.emit("buyerForm:errors", errors);
+    const currentData = this.getBuyerData();
+    this.events.emit("buyerForm:change", currentData);
   }
 
   getBuyerData(): IBuyer {
@@ -29,29 +28,29 @@ export class BuyerData {
 
   clear(): void {
     this._buyer = {
-      payment: "card",
+      payment: "",
       address: "",
       email: "",
       phone: "",
     };
   }
 
-  validate(): Record<keyof IBuyer, string> {
-    const errors: Partial<Record<keyof IBuyer, string>> = {};
+  validate(): TFormErrors {
+    const errors: TFormErrors = {};
 
     if (!this._buyer.payment) {
       errors.payment = "Не выбран вид оплаты";
     }
-    if (!this._buyer.address || this._buyer.address.trim() === "") {
+    if (!this._buyer.address?.trim()) {
       errors.address = "Укажите адрес доставки";
     }
-    if (!this._buyer.email || this._buyer.email.trim() === "") {
+    if (!this._buyer.email?.trim()) {
       errors.email = "Укажите email";
     }
-    if (!this._buyer.phone || this._buyer.phone.trim() === "") {
+    if (!this._buyer.phone?.trim()) {
       errors.phone = "Укажите номер телефона";
     }
 
-    return errors as Record<keyof IBuyer, string>;
+    return errors;
   }
 }
